@@ -2,46 +2,39 @@
 
 export default function Header() {
   return (
-    <header id="header" className="header" role="banner" aria-label="Site header">
-      <nav className="navbar navbar-dark bg-primary navbar-expand-lg" id="navbar-main">
-        <div className="navbar-brand-wrapper">
-          <a href="/" className="navbar-brand">
-            <img
-              src="https://raw.githubusercontent.com/ryan-detailpage/logo_repo/main/dplogo.png"
-              alt="DetailPage"
-              className="img-fluid"
-              style={{height: '30px', width: 'auto'}}
-            />
-          </a>
-        </div>
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#CollapsingNavbar"
-        >
+    <nav className="navbar navbar-expand-lg header">
+      <div className="container-fluid">
+        <a href="/" className="navbar-brand">
+          <img src="https://insights.detailpage.com/themes/custom/detailpage_base/dpLogo.png" alt="DetailPage" />
+        </a>
+        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
           <span className="navbar-toggler-icon"></span>
         </button>
-        <div className="collapse navbar-collapse justify-content-end" id="CollapsingNavbar">
-          <ul className="nav flex-row">
+        <div className="collapse navbar-collapse" id="navbarNav">
+          <ul className="navbar-nav ms-auto">
             <li className="nav-item">
-              <a href="/reports" className="nav-link">Amazon Insights</a>
+              <a className="nav-link active" href="/" title="Client Tools">
+                <i className="fas fa-tools"></i> Client Tools
+              </a>
             </li>
             <li className="nav-item">
-              <a href="/optimized-content" className="nav-link active">Search Optimization</a>
+              <a className="nav-link" href="https://insights.detailpage.com/reports" target="_blank" rel="noopener noreferrer" title="Amazon Insights">
+                <i className="fas fa-chart-line"></i> Amazon Insights
+              </a>
             </li>
             <li className="nav-item">
-              <a href="/user/edit" className="nav-link">Account</a>
+              <a className="nav-link" href="https://insights.detailpage.com/optimized-content" target="_blank" rel="noopener noreferrer" title="Search Optimization">
+                <i className="fas fa-list"></i> Search Optimization
+              </a>
             </li>
             <li className="nav-item">
-              <a href="mailto:customer-support@detailpage.com" className="nav-link">Support</a>
-            </li>
-            <li className="nav-item">
-              <a href="/user/logout" className="nav-link">Logout</a>
+              <a className="nav-link" href="https://insights.detailpage.com/user/edit" target="_blank" rel="noopener noreferrer" title="Account">
+                <i className="fas fa-user-circle"></i> Account
+              </a>
             </li>
           </ul>
         </div>
-      </nav>
-    </header>
+      </div>
+    </nav>
   )
 }

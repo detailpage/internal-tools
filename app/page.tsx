@@ -10,16 +10,20 @@ type Tool = 'keyword-finder' | 'keyword-universe' | 'keyword-history'
 
 // Version to verify deployment
 const APP_VERSION = '1.0.5'
-const BUILD_TIME = new Date().toISOString()
 
 export default function Home() {
   const [activeTool, setActiveTool] = useState<Tool>('keyword-finder')
   const [selectedKeywords, setSelectedKeywords] = useState<string[]>([])
+  const [buildTime, setBuildTime] = useState<string>('')
 
   useEffect(() => {
+    // Set build time on client only to avoid hydration mismatch
+    const currentTime = new Date().toISOString()
+    setBuildTime(currentTime)
+
     console.log('%c=== APP VERSION ===', 'background: #FF9900; color: white; font-size: 18px; padding: 6px; font-weight: bold;')
     console.log('%cVersion:', 'font-weight: bold; font-size: 14px;', APP_VERSION)
-    console.log('%cBuild time:', 'font-weight: bold; font-size: 14px;', BUILD_TIME)
+    console.log('%cBuild time:', 'font-weight: bold; font-size: 14px;', currentTime)
     console.log('%c==================', 'background: #FF9900; color: white; font-size: 18px; padding: 6px; font-weight: bold;')
   }, [])
 
@@ -95,7 +99,7 @@ export default function Home() {
         borderTopLeftRadius: '4px',
         zIndex: 1000
       }}>
-        v{APP_VERSION} | Built: {BUILD_TIME}
+        v{APP_VERSION}{buildTime && ` | Built: ${buildTime}`}
       </footer>
     </>
   )

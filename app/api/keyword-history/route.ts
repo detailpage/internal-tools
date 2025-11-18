@@ -69,10 +69,10 @@ export async function POST(request: NextRequest) {
     })
 
     // Get unique keywords
-    const uniqueKeywords = [...new Set(dataArray.map((item: any[]) => item[1]))]
+    const uniqueKeywords: string[] = [...new Set(dataArray.map((item: any[]) => item[1] as string))]
 
     // Get unique dates and sort
-    const uniqueDates = [...new Set(dataArray.map((item: any[]) => item[0]))].sort()
+    const uniqueDates: string[] = [...new Set(dataArray.map((item: any[]) => item[0] as string))].sort()
 
     // Initialize pivot table with headers
     const pivotData: any[][] = [['Date'].concat(uniqueKeywords)]

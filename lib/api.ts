@@ -1,7 +1,13 @@
 // API helper for calling backend endpoints
 // Uses relative paths to work with Next.js API routes (works on Vercel and locally)
 
+// Force empty string - never use environment variables for API base URL
 const API_BASE_URL = ''
+
+// Verify we're using relative paths
+if (typeof window !== 'undefined') {
+  console.log('API Base URL:', API_BASE_URL || '(relative paths)')
+}
 
 export async function fetchKeywordFinder(searchTerm: string, searchType: string) {
   const response = await fetch(`${API_BASE_URL}/api/keyword-finder`, {

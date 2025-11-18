@@ -6,17 +6,26 @@ const API_BASE_URL = ''
 
 // Log environment check
 if (typeof window !== 'undefined') {
-  console.log('=== API CONFIGURATION DEBUG ===')
-  console.log('API_BASE_URL:', API_BASE_URL)
-  console.log('process.env.NEXT_PUBLIC_API_URL:', process.env.NEXT_PUBLIC_API_URL)
-  console.log('Window location:', window.location.origin)
-  console.log('==============================')
+  console.log('%c=== API CONFIGURATION DEBUG ===', 'background: #0BBBDF; color: white; font-size: 16px; padding: 4px;')
+  console.log('%cAPI_BASE_URL:', 'font-weight: bold', API_BASE_URL)
+  console.log('%cprocess.env.NEXT_PUBLIC_API_URL:', 'font-weight: bold', process.env.NEXT_PUBLIC_API_URL)
+  console.log('%cWindow location:', 'font-weight: bold', window.location.origin)
+  console.log('%c==============================', 'background: #0BBBDF; color: white; font-size: 16px; padding: 4px;')
+
+  // Alert if problematic env var is set
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    console.error('%c⚠️ WARNING: NEXT_PUBLIC_API_URL is set to: ' + process.env.NEXT_PUBLIC_API_URL,
+      'background: red; color: white; font-size: 14px; padding: 4px;')
+  }
 }
 
 export async function fetchKeywordFinder(searchTerm: string, searchType: string) {
   const fullUrl = `${API_BASE_URL}/api/keyword-finder`
-  console.log('🔍 Keyword Finder - Calling URL:', fullUrl)
-  console.log('🔍 Keyword Finder - Full resolved URL:', new URL(fullUrl, window.location.origin).href)
+  console.log('%c🔍 Keyword Finder - Calling URL:', 'color: #0BBBDF; font-weight: bold; font-size: 14px;', fullUrl)
+  console.log('%c🔍 Keyword Finder - Full resolved URL:', 'color: #0BBBDF; font-weight: bold; font-size: 14px;', new URL(fullUrl, window.location.origin).href)
+
+  // Additional diagnostic
+  console.log('%c📍 Current window.location.href:', 'color: purple; font-weight: bold;', window.location.href)
 
   const response = await fetch(fullUrl, {
     method: 'POST',

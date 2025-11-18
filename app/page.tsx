@@ -9,17 +9,18 @@ import KeywordHistory from './components/KeywordHistory'
 type Tool = 'keyword-finder' | 'keyword-universe' | 'keyword-history'
 
 // Version to verify deployment
-const APP_VERSION = '1.0.3'
+const APP_VERSION = '1.0.4'
+const BUILD_TIME = new Date().toISOString()
 
 export default function Home() {
   const [activeTool, setActiveTool] = useState<Tool>('keyword-finder')
   const [selectedKeywords, setSelectedKeywords] = useState<string[]>([])
 
   useEffect(() => {
-    console.log('=== APP VERSION ===')
-    console.log('Version:', APP_VERSION)
-    console.log('Build time:', new Date().toISOString())
-    console.log('==================')
+    console.log('%c=== APP VERSION ===', 'background: #FF9900; color: white; font-size: 18px; padding: 6px; font-weight: bold;')
+    console.log('%cVersion:', 'font-weight: bold; font-size: 14px;', APP_VERSION)
+    console.log('%cBuild time:', 'font-weight: bold; font-size: 14px;', BUILD_TIME)
+    console.log('%c==================', 'background: #FF9900; color: white; font-size: 18px; padding: 6px; font-weight: bold;')
   }, [])
 
   const navigateToTool = (tool: Tool, keywords?: string[]) => {
@@ -80,6 +81,22 @@ export default function Home() {
           )}
         </div>
       </div>
+
+      {/* Version Footer */}
+      <footer style={{
+        position: 'fixed',
+        bottom: 0,
+        right: 0,
+        padding: '8px 16px',
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        color: '#fff',
+        fontSize: '11px',
+        fontFamily: 'monospace',
+        borderTopLeftRadius: '4px',
+        zIndex: 1000
+      }}>
+        v{APP_VERSION} | Built: {BUILD_TIME}
+      </footer>
     </>
   )
 }

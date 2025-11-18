@@ -1,0 +1,2070 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Tools Prototype - DetailPage</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+        }
+
+        /* Header Styles - matching the screenshot */
+        .header {
+            background-color: #ffffff;
+            color: #333;
+            padding: 0;
+            border-bottom: 1px solid #e0e0e0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .navbar {
+            padding: 0.5rem 1.5rem;
+        }
+
+        .navbar-brand {
+            padding: 0;
+        }
+
+        .navbar-brand img {
+            height: 32px;
+        }
+
+        /* Client dropdown styling */
+        .client-dropdown {
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 0.4rem 0.75rem;
+            font-size: 0.95rem;
+            color: #333;
+            cursor: pointer;
+            min-width: 150px;
+        }
+
+        .navbar-nav .nav-link {
+            color: #00b8d4;
+            padding: 0.5rem 1rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #0097b2;
+        }
+
+        .navbar-nav .nav-link.active {
+            color: #00b8d4;
+        }
+
+        .navbar-nav .nav-link i {
+            font-size: 1rem;
+        }
+
+        /* Layout */
+        .main-container {
+            display: flex;
+            height: calc(100vh - 65px);
+            background-color: #f5f5f5;
+        }
+
+        /* Left Sidebar - matching the clean white style */
+        .sidebar {
+            width: 260px;
+            background-color: #ffffff;
+            border-right: 1px solid #e0e0e0;
+            overflow-y: auto;
+            padding: 1.25rem 0;
+        }
+
+        .sidebar-section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            margin-bottom: 0.5rem;
+            background-color: #f8f9fa;
+            border-left: 3px solid #00b8d4;
+        }
+
+        .sidebar-section-header i {
+            color: #00b8d4;
+            font-size: 1.1rem;
+        }
+
+        .sidebar-section-header h6 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #333;
+        }
+
+        .tool-category {
+            margin-bottom: 1rem;
+        }
+
+        .tool-category-title {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #333 !important;
+            letter-spacing: 0.08em;
+            padding: 0.6rem 1.25rem 0.3rem 1.25rem;
+            margin-bottom: 0.15rem;
+        }
+
+        .tool-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .tool-item {
+            padding: 0.55rem 1.25rem;
+            margin: 0;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            font-size: 0.875rem;
+            font-weight: 400;
+            color: #555;
+            border-left: 3px solid transparent;
+            background-color: transparent;
+        }
+
+        .tool-item:hover {
+            background-color: #f8f9fa;
+            color: #00b8d4;
+            border-left-color: #e0e0e0;
+        }
+
+        .tool-item.active {
+            background-color: #e8f7fa;
+            color: #00b8d4;
+            border-left-color: #00b8d4;
+            font-weight: 500;
+        }
+
+        /* Main Content Area */
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.25rem 2rem;
+            background-color: #f5f5f5;
+        }
+
+        .tool-content {
+            display: none;
+        }
+
+        .tool-content.active {
+            display: block;
+        }
+
+        .tool-header {
+            margin-bottom: 1rem;
+            padding-bottom: 0;
+        }
+
+        .tool-header h2 {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.25rem;
+            font-size: 1.35rem;
+        }
+
+        .tool-header p {
+            color: #777;
+            margin: 0;
+            font-size: 0.875rem;
+        }
+
+        .tool-form {
+            background-color: #ffffff;
+            padding: 1.5rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .form-section {
+            margin-bottom: 1rem;
+        }
+
+        .form-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 0.35rem;
+            font-size: 0.85rem;
+        }
+
+        .form-control, .form-select {
+            border: 1px solid #d0d0d0;
+            border-radius: 4px;
+            padding: 0.5rem 0.65rem;
+            font-size: 0.875rem;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #00b8d4;
+            box-shadow: 0 0 0 0.2rem rgba(0, 184, 212, 0.15);
+        }
+
+        .form-check-input:checked {
+            background-color: #00b8d4;
+            border-color: #00b8d4;
+        }
+
+        .form-text {
+            font-size: 0.85rem;
+            color: #999;
+        }
+
+        .btn-primary {
+            background-color: #FFA500;
+            border-color: #FFA500;
+            font-weight: 600;
+            padding: 0.5rem 1.5rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+        }
+
+        .btn-primary:hover {
+            background-color: #ff9500;
+            border-color: #ff9500;
+        }
+
+        .btn-secondary {
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            color: #555;
+            font-weight: 500;
+            padding: 0.5rem 1.5rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+        }
+
+        .btn-secondary:hover {
+            background-color: #f8f9fa;
+            border-color: #dee2e6;
+            color: #555;
+        }
+
+        .results-section {
+            margin-top: 1.5rem;
+        }
+
+        .results-placeholder {
+            background-color: #ffffff;
+            border: 2px dashed #dee2e6;
+            border-radius: 6px;
+            padding: 2rem;
+            text-align: center;
+            color: #999;
+        }
+
+        .badge-info {
+            background-color: #00b8d4;
+            color: white;
+            font-weight: 500;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-left: 0.4rem;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 3px;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Table styling */
+        .table thead.table-light th {
+            background-color: #00b8d4 !important;
+            color: white !important;
+            font-weight: 600;
+            border: none;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(255, 165, 0, 0.1) !important;
+        }
+
+        /* Amazon link styling */
+        .amazon-link {
+            color: #FF9900;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .amazon-link:hover {
+            color: #FFA500;
+            transform: scale(1.15);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <nav class="navbar navbar-expand-lg header">
+        <div class="container-fluid">
+            <a href="#" class="navbar-brand">
+                <img src="https://insights.detailpage.com/themes/custom/detailpage_base/dpLogo.png" alt="DetailPage">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" title="Client Tools">
+                            <i class="fas fa-tools"></i> Client Tools
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://insights.detailpage.com/reports" target="_blank" title="Amazon Insights">
+                            <i class="fas fa-chart-line"></i> Amazon Insights
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://insights.detailpage.com/optimized-content" target="_blank" title="Search Optimization">
+                            <i class="fas fa-list"></i> Search Optimization
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://insights.detailpage.com/user/edit" target="_blank" title="Account">
+                            <i class="fas fa-user-circle"></i> Account
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-mailtocustomer-supportdetailpagecom" href="mailto:customer-support@detailpage.com" title="Support">
+                            <i class="fas fa-envelope"></i> Support
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" title="Logout">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Left Sidebar -->
+        <aside class="sidebar scrollbar-thin">
+            <div class="sidebar-section-header">
+                <i class="fas fa-tools"></i>
+                <h6>CLIENT TOOLS</h6>
+            </div>
+
+            <!-- Keyword Research -->
+            <div class="tool-category">
+                <div class="tool-category-title">Keyword Research</div>
+                <ul class="tool-list">
+                    <li class="tool-item active" data-tool="keyword-finder">Keyword Finder</li>
+                    <li class="tool-item" data-tool="keyword-universe">Keyword Universe Generator</li>
+                    <li class="tool-item" data-tool="keyword-history">Keyword History</li>
+                    <li class="tool-item" data-tool="search-results">Search Results by Retailer</li>
+                </ul>
+            </div>
+
+            <!-- Conversion Analysis -->
+            <div class="tool-category">
+                <div class="tool-category-title">Conversion Analysis</div>
+                <ul class="tool-list">
+                    <li class="tool-item" data-tool="customer-reviews">Customer Reviews by Retailer</li>
+                    <li class="tool-item" data-tool="image-analysis">Image Analysis</li>
+                </ul>
+            </div>
+
+            <!-- Get Item Information -->
+            <div class="tool-category">
+                <div class="tool-category-title">Get Item Information</div>
+                <ul class="tool-list">
+                    <li class="tool-item" data-tool="item-info">Item Information by Retailer</li>
+                    <li class="tool-item" data-tool="asin-list">ASIN List</li>
+                    <li class="tool-item" data-tool="brand-asin">Brand ASIN List</li>
+                    <li class="tool-item" data-tool="category-asin">Category ASIN List</li>
+                    <li class="tool-item" data-tool="seller-asin">Seller ASIN List</li>
+                    <li class="tool-item" data-tool="variation-asin">Variation ASIN List</li>
+                </ul>
+            </div>
+
+            <!-- Buy Box Analysis -->
+            <div class="tool-category">
+                <div class="tool-category-title">Buy Box Analysis</div>
+                <ul class="tool-list">
+                    <li class="tool-item" data-tool="asin-bbx">ASIN List BBX Analysis</li>
+                    <li class="tool-item" data-tool="brand-bbx">Brand BBX Analysis</li>
+                </ul>
+            </div>
+
+            <!-- Advertising Analysis & Audits -->
+            <div class="tool-category">
+                <div class="tool-category-title">Advertising Analysis & Audits</div>
+                <ul class="tool-list">
+                    <li class="tool-item" data-tool="indexing">Indexing & Content Completeness</li>
+                    <li class="tool-item" data-tool="bulk-indexing">Bulk Indexing Audit</li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="content-area scrollbar-thin">
+            <!-- Keyword Finder Tool -->
+            <div id="keyword-finder" class="tool-content active">
+                <div class="tool-header">
+                    <h2><i class="fas fa-search"></i> Keyword Finder</h2>
+                    <p>Discover semantically similar keywords for any word, text, or ASIN.</p>
+                </div>
+
+                <div class="tool-form" id="kf-form-container">
+                    <div id="kf-form-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; cursor: pointer; padding: 0.5rem; background-color: #f8f9fa; border-radius: 4px;">
+                        <span style="font-weight: 600; color: #333;">
+                            <i class="fas fa-search"></i> Search Parameters
+                        </span>
+                        <i class="fas fa-chevron-up" id="kf-collapse-icon"></i>
+                    </div>
+
+                    <div id="kf-form-fields">
+                        <div class="form-section">
+                            <input type="text" class="form-control" id="kf-search-term" placeholder="Enter a seed keyword or phrase (e.g., 'wireless headphones')">
+                        </div>
+
+                        <div class="form-section">
+                            <div class="d-flex gap-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="kf-search-type" id="kf-type-ai" value="ai-phrase" checked>
+                                    <label class="form-check-label" for="kf-type-ai" title="Uses AI to find semantically similar keywords based on meaning and context">
+                                        AI Phrase Match
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="kf-search-type" id="kf-type-exact" value="exact-match">
+                                    <label class="form-check-label" for="kf-type-exact" title="Finds keywords that contain or closely match your exact search term">
+                                        Exact Match
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="kf-search-type" id="kf-type-asin" value="asin-lookup">
+                                    <label class="form-check-label" for="kf-type-asin" title="Enter ASINs to discover keywords associated with those products">
+                                        ASIN Lookup
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <button class="btn btn-primary" id="kf-submit">
+                                <i class="fas fa-search"></i> Find Keywords
+                            </button>
+                            <button class="btn btn-secondary ms-2" id="kf-clear" style="display:none;">
+                                <i class="fas fa-times"></i> Clear Results
+                            </button>
+                            <button class="btn btn-secondary ms-2" id="kf-export" style="display:none;">
+                                <i class="fas fa-download"></i> Export CSV
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="kf-loading" style="display:none;">
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary mb-3" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p>Searching for related keywords...</p>
+                    </div>
+                </div>
+
+                <div class="results-section" id="kf-results-section" style="display:none;">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="mb-0">Results (<span id="kf-result-count">0</span> keywords found)</h5>
+                        <div id="kf-action-buttons" style="display:none;">
+                            <button class="btn btn-sm btn-primary" id="kf-to-universe">
+                                <i class="fas fa-globe"></i> Generate Keyword Universe
+                            </button>
+                            <button class="btn btn-sm btn-primary ms-2" id="kf-to-history">
+                                <i class="fas fa-history"></i> View Keyword History
+                            </button>
+                        </div>
+                    </div>
+                    <div id="kf-results"></div>
+                </div>
+            </div>
+
+            <!-- Keyword Universe Generator Tool -->
+            <div id="keyword-universe" class="tool-content">
+                <div class="tool-header">
+                    <h2><i class="fas fa-globe"></i> Keyword Universe Generator</h2>
+                    <p>Use customer shopping behavior to find the most related keywords to a given set of keywords or ASINs</p>
+                </div>
+
+                <div class="tool-form" id="ku-form-container">
+                    <div id="ku-form-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; cursor: pointer; padding: 0.5rem; background-color: #f8f9fa; border-radius: 4px;">
+                        <span style="font-weight: 600; color: #333;">
+                            <i class="fas fa-search"></i> Search Parameters
+                        </span>
+                        <i class="fas fa-chevron-up" id="ku-collapse-icon"></i>
+                    </div>
+
+                    <div id="ku-form-fields">
+                        <div class="row">
+                            <div class="col-md-6 form-section">
+                                <label class="form-label fw-bold">Seed Keywords <span class="badge-info">Up to 100</span></label>
+                                <textarea class="form-control" id="ku-keywords" rows="4" placeholder="Enter seed keywords here, each keyword on a new line"></textarea>
+                            </div>
+
+                            <div class="col-md-6 form-section">
+                                <label class="form-label fw-bold">Seed ASINs <span class="badge-info">Up to 10</span></label>
+                                <textarea class="form-control" id="ku-asins" rows="4" placeholder="Enter seed ASINs here, each ASIN on a new line"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 form-section">
+                                <label class="form-label fw-bold">
+                                    Relevancy Levels
+                                    <i class="fas fa-question-circle" style="color: #00b8d4; cursor: help; font-size: 0.85rem;" title="Higher levels return more keywords but may be less relevant"></i>
+                                </label>
+                                <select class="form-select" id="ku-levels">
+                                    <option value="1">1 - Most Relevant</option>
+                                    <option value="2" selected>2 - Very Relevant</option>
+                                    <option value="3">3 - Moderately Relevant</option>
+                                    <option value="4">4 - All Related</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-section" style="margin-top: 1.5rem;">
+                            <button class="btn btn-primary" id="ku-submit">
+                                <i class="fas fa-globe"></i> Generate Universe
+                            </button>
+                            <button class="btn btn-secondary ms-2" id="ku-clear" style="display:none;">
+                                <i class="fas fa-times"></i> Clear Results
+                            </button>
+                            <button class="btn btn-secondary ms-2" id="ku-export" style="display:none;">
+                                <i class="fas fa-download"></i> Export CSV
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="ku-loading" style="display:none;">
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary mb-3" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p>Generating keyword universe...</p>
+                    </div>
+                </div>
+
+                <div class="results-section" id="ku-results-section" style="display:none;">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="mb-0">Results (<span id="ku-result-count">0</span> keywords found)</h5>
+                    </div>
+                    <div id="ku-results"></div>
+                </div>
+            </div>
+
+            <!-- Keyword History Tool -->
+            <div id="keyword-history" class="tool-content">
+                <div class="tool-header">
+                    <h2><i class="fas fa-history"></i> Keyword History</h2>
+                    <p>Find the historical search volume for a set of keywords</p>
+                </div>
+
+                <div class="tool-form" id="kh-form-container">
+                    <div id="kh-form-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; cursor: pointer; padding: 0.5rem; background-color: #f8f9fa; border-radius: 4px;">
+                        <span style="font-weight: 600; color: #333;">
+                            <i class="fas fa-search"></i> Search Parameters
+                        </span>
+                        <i class="fas fa-chevron-up" id="kh-collapse-icon"></i>
+                    </div>
+
+                    <div id="kh-form-fields">
+                        <div class="form-section">
+                            <label class="form-label fw-bold">
+                                Keywords <span class="badge-info">Up to 10</span>
+                                <i class="fas fa-question-circle" style="color: #00b8d4; cursor: help; font-size: 0.85rem;" title="Enter keywords to view their historical search volume trends"></i>
+                            </label>
+                            <textarea class="form-control" id="kh-keywords" rows="4" placeholder="Enter keywords (one per line)"></textarea>
+                        </div>
+
+                        <div class="form-section" style="margin-top: 1.5rem;">
+                            <button class="btn btn-primary" id="kh-submit">
+                                <i class="fas fa-history"></i> View History
+                            </button>
+                            <button class="btn btn-secondary ms-2" id="kh-clear" style="display:none;">
+                                <i class="fas fa-times"></i> Clear Results
+                            </button>
+                            <button class="btn btn-secondary ms-2" id="kh-export" style="display:none;">
+                                <i class="fas fa-download"></i> Export CSV
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="kh-loading" style="display:none;">
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary mb-3" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p>Loading historical data...</p>
+                    </div>
+                </div>
+
+                <div class="results-section" id="kh-results-section" style="display:none;">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0">Historical Search Volume</h5>
+                    </div>
+
+                    <!-- Chart Container -->
+                    <div style="background-color: #ffffff; padding: 1.5rem; border-radius: 6px; margin-bottom: 1.5rem; border: 1px solid #e0e0e0;">
+                        <canvas id="kh-chart"></canvas>
+                    </div>
+
+                    <!-- Data Table -->
+                    <div id="kh-results"></div>
+                </div>
+            </div>
+
+            <!-- Search Results by Retailer -->
+            <div id="search-results" class="tool-content">
+                <div class="tool-header">
+                    <h2><i class="fas fa-list"></i> Search Results by Retailer</h2>
+                    <p>View search results for specific keywords across different retailers</p>
+                </div>
+
+                <div class="tool-form">
+                    <div class="form-section">
+                        <label class="form-label fw-bold">Search Keyword</label>
+                        <input type="text" class="form-control" placeholder="Enter search keyword">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 form-section">
+                            <label class="form-label fw-bold">Retailer</label>
+                            <select class="form-select">
+                                <option selected>Amazon US</option>
+                                <option>Amazon CA</option>
+                                <option>Walmart</option>
+                                <option>Target</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 form-section">
+                            <label class="form-label fw-bold">Number of Results</label>
+                            <select class="form-select">
+                                <option>Top 10</option>
+                                <option>Top 20</option>
+                                <option selected>Top 50</option>
+                                <option>Top 100</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary btn-lg">
+                        <i class="fas fa-search"></i> Get Search Results
+                    </button>
+                </div>
+
+                <div class="results-section">
+                    <div class="results-placeholder">
+                        <i class="fas fa-shopping-cart fa-3x mb-3"></i>
+                        <p>Search results will be displayed here</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customer Reviews by Retailer -->
+            <div id="customer-reviews" class="tool-content">
+                <div class="tool-header">
+                    <h2><i class="fas fa-star"></i> Customer Reviews by Retailer</h2>
+                    <p>Analyze customer reviews and ratings for products</p>
+                </div>
+
+                <div class="tool-form">
+                    <div class="form-section">
+                        <label class="form-label fw-bold">Product ASIN</label>
+                        <input type="text" class="form-control" placeholder="Enter ASIN (e.g., B08N5WRWNW)">
+                    </div>
+
+                    <div class="form-section">
+                        <label class="form-label fw-bold">Retailer</label>
+                        <select class="form-select">
+                            <option selected>Amazon US</option>
+                            <option>Amazon CA</option>
+                            <option>Amazon UK</option>
+                        </select>
+                    </div>
+
+                    <div class="form-section">
+                        <label class="form-label fw-bold">Analysis Options</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="sentimentAnalysis" checked>
+                            <label class="form-check-label" for="sentimentAnalysis">
+                                Sentiment analysis
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="keyPhrases" checked>
+                            <label class="form-check-label" for="keyPhrases">
+                                Extract key phrases
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="competitorCompare">
+                            <label class="form-check-label" for="competitorCompare">
+                                Compare with competitors
+                            </label>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary btn-lg">
+                        <i class="fas fa-star"></i> Analyze Reviews
+                    </button>
+                </div>
+
+                <div class="results-section">
+                    <div class="results-placeholder">
+                        <i class="fas fa-comments fa-3x mb-3"></i>
+                        <p>Review analysis will appear here</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Image Analysis -->
+            <div id="image-analysis" class="tool-content">
+                <div class="tool-header">
+                    <h2><i class="fas fa-image"></i> Image Analysis</h2>
+                    <p>Analyze product images for optimization opportunities</p>
+                </div>
+
+                <div class="tool-form">
+                    <div class="form-section">
+                        <label class="form-label fw-bold">Product ASIN or Image URL</label>
+                        <input type="text" class="form-control" placeholder="Enter ASIN or paste image URL">
+                    </div>
+
+                    <div class="form-section">
+                        <label class="form-label fw-bold">Analysis Type</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="qualityCheck" checked>
+                            <label class="form-check-label" for="qualityCheck">
+                                Image quality check
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="complianceCheck" checked>
+                            <label class="form-check-label" for="complianceCheck">
+                                Amazon compliance check
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="competitorCompareImg">
+                            <label class="form-check-label" for="competitorCompareImg">
+                                Compare with top competitors
+                            </label>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary btn-lg">
+                        <i class="fas fa-image"></i> Analyze Images
+                    </button>
+                </div>
+
+                <div class="results-section">
+                    <div class="results-placeholder">
+                        <i class="fas fa-camera fa-3x mb-3"></i>
+                        <p>Image analysis results will be shown here</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item Information by Retailer -->
+            <div id="item-info" class="tool-content">
+                <div class="tool-header">
+                    <h2><i class="fas fa-info-circle"></i> Item Information by Retailer</h2>
+                    <p>Get detailed product information from retailer websites</p>
+                </div>
+
+                <div class="tool-form">
+                    <div class="form-section">
+                        <label class="form-label fw-bold">Product Identifier</label>
+                        <input type="text" class="form-control" placeholder="Enter ASIN, UPC, or product URL">
+                    </div>
+
+                    <div class="form-section">
+                        <label class="form-label fw-bold">Retailer</label>
+                        <select class="form-select">
+                            <option selected>Amazon US</option>
+                            <option>Amazon CA</option>
+                            <option>Walmart</option>
+                            <option>Target</option>
+                        </select>
+                    </div>
+
+                    <button class="btn btn-primary btn-lg">
+                        <i class="fas fa-download"></i> Get Product Info
+                    </button>
+                </div>
+
+                <div class="results-section">
+                    <div class="results-placeholder">
+                        <i class="fas fa-box fa-3x mb-3"></i>
+                        <p>Product details will appear here</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ASIN List -->
+            <div id="asin-list" class="tool-content">
+                <div class="tool-header">
+                    <h2><i class="fas fa-list-ul"></i> ASIN List</h2>
+                    <p>Get bulk information for multiple ASINs</p>
+                </div>
+
+                <div class="tool-form">
+                    <div class="form-section">
+                        <label class="form-label fw-bold">ASINs <span class="badge-info">Up to 100</span></label>
+                        <textarea class="form-control" rows="5" placeholder="Enter ASINs (one per line or comma-separated)"></textarea>
+                    </div>
+
+                    <div class="form-section">
+                        <label class="form-label fw-bold">Retailer</label>
+                        <select class="form-select">
+                            <option selected>Amazon US</option>
+                            <option>Amazon CA</option>
+                            <option>Amazon UK</option>
+                        </select>
+                    </div>
+
+                    <button class="btn btn-primary btn-lg">
+                        <i class="fas fa-download"></i> Get ASIN Details
+                    </button>
+                </div>
+
+                <div class="results-section">
+                    <div class="results-placeholder">
+                        <i class="fas fa-table fa-3x mb-3"></i>
+                        <p>ASIN data will be displayed in a table format</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Brand ASIN List -->
+            <div id="brand-asin" class="tool-content">
+                <div class="tool-header">
+                    <h2><i class="fas fa-tag"></i> Brand ASIN List</h2>
+                    <p>Get all ASINs for a specific brand</p>
+                </div>
+
+                <div class="tool-form">
+                    <div class="form-section">
+                        <label class="form-label fw-bold">Brand Name</label>
+                        <input type="text" class="form-control" placeholder="Enter brand name">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 form-section">
+                            <label class="form-label fw-bold">Retailer</label>
+                            <select class="form-select">
+                                <option selected>Amazon US</option>
+                                <option>Amazon CA</option>
+                                <option>Amazon UK</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 form-section">
+                            <label class="form-label fw-bold">Category Filter (Optional)</label>
+                            <input type="text" class="form-control" placeholder="e.g., Electronics">
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary btn-lg">
+                        <i class="fas fa-download"></i> Get Brand ASINs
+                    </button>
+                </div>
+
+                <div class="results-section">
+                    <div class="results-placeholder">
+                        <i class="fas fa-tags fa-3x mb-3"></i>
+                        <p>Brand ASINs will be listed here</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category ASIN List -->
+            <div id="category-asin" class="tool-content">
+                <div class="tool-header">
+                    <h2><i class="fas fa-folder"></i> Category ASIN List</h2>
+                    <p>Get all ASINs within a specific category</p>
+                </div>
+
+                <div class="tool-form">
+                    <div class="form-section">
+                        <label class="form-label fw-bold">Category or Browse Node</label>
+                        <input type="text" class="form-control" placeholder="Enter category name or browse node ID">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 form-section">
+                            <label class="form-label fw-bold">Retailer</label>
+                            <select class="form-select">
+                                <option selected>Amazon US</option>
+                                <option>Amazon CA</option>
+                                <option>Amazon UK</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 form-section">
+                            <label class="form-label fw-bold">Max Results</label>
+                            <select class="form-select">
+                                <option>100</option>
+                                <option selected>500</option>
+                                <option>1000</option>
+                                <option>All</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary btn-lg">
+                        <i class="fas fa-download"></i> Get Category ASINs
+                    </button>
+                </div>
+
+                <div class="results-section">
+                    <div class="results-placeholder">
+                        <i class="fas fa-sitemap fa-3x mb-3"></i>
+                        <p>Category ASINs will be displayed here</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seller ASIN List -->
+            <div id="seller-asin" class="tool-content">
+                <div class="tool-header">
+                    <h2><i class="fas fa-store"></i> Seller ASIN List</h2>
+                    <p>Get all ASINs sold by a specific seller</p>
+                </div>
+
+                <div class="tool-form">
+                    <div class="form-section">
+                        <label class="form-label fw-bold">Seller ID or Name</label>
+                        <input type="text" class="form-control" placeholder="Enter seller ID or seller name">
+                    </div>
+
+                    <div class="form-section">
+                        <label class="form-label fw-bold">Retailer</label>
+                        <select class="form-select">
+                            <option selected>Amazon US</option>
+                            <option>Amazon CA</option>
+                            <option>Amazon UK</option>
+                        </select>
+                    </div>
+
+                    <button class="btn btn-primary btn-lg">
+                        <i class="fas fa-download"></i> Get Seller ASINs
+                    </button>
+                </div>
+
+                <div class="results-section">
+                    <div class="results-placeholder">
+                        <i class="fas fa-shopping-bag fa-3x mb-3"></i>
+                        <p>Seller's product list will appear here</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Variation ASIN List -->
+            <div id="variation-asin" class="tool-content">
+                <div class="tool-header">
+                    <h2><i class="fas fa-clone"></i> Variation ASIN List</h2>
+                    <p>Get all variations of a parent ASIN</p>
+                </div>
+
+                <div class="tool-form">
+                    <div class="form-section">
+                        <label class="form-label fw-bold">Parent ASIN</label>
+                        <input type="text" class="form-control" placeholder="Enter parent ASIN">
+                    </div>
+
+                    <div class="form-section">
+                        <label class="form-label fw-bold">Retailer</label>
+                        <select class="form-select">
+                            <option selected>Amazon US</option>
+                            <option>Amazon CA</option>
+                            <option>Amazon UK</option>
+                        </select>
+                    </div>
+
+                    <button class="btn btn-primary btn-lg">
+                        <i class="fas fa-download"></i> Get Variations
+                    </button>
+                </div>
+
+                <div class="results-section">
+                    <div class="results-placeholder">
+                        <i class="fas fa-code-branch fa-3x mb-3"></i>
+                        <p>Product variations will be listed here</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ASIN List BBX Analysis -->
+            <div id="asin-bbx" class="tool-content">
+                <div class="tool-header">
+                    <h2><i class="fas fa-chart-bar"></i> ASIN List BBX Analysis</h2>
+                    <p>Analyze Buy Box metrics for multiple ASINs</p>
+                </div>
+
+                <div class="tool-form">
+                    <div class="form-section">
+                        <label class="form-label fw-bold">ASINs <span class="badge-info">Up to 50</span></label>
+                        <textarea class="form-control" rows="5" placeholder="Enter ASINs (one per line)"></textarea>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 form-section">
+                            <label class="form-label fw-bold">Retailer</label>
+                            <select class="form-select">
+                                <option selected>Amazon US</option>
+                                <option>Amazon CA</option>
+                                <option>Amazon UK</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 form-section">
+                            <label class="form-label fw-bold">Analysis Period</label>
+                            <select class="form-select">
+                                <option>Last 7 days</option>
+                                <option selected>Last 30 days</option>
+                                <option>Last 90 days</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary btn-lg">
+                        <i class="fas fa-chart-bar"></i> Analyze Buy Box
+                    </button>
+                </div>
+
+                <div class="results-section">
+                    <div class="results-placeholder">
+                        <i class="fas fa-trophy fa-3x mb-3"></i>
+                        <p>Buy Box analysis will be displayed here</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Brand BBX Analysis -->
+            <div id="brand-bbx" class="tool-content">
+                <div class="tool-header">
+                    <h2><i class="fas fa-award"></i> Brand BBX Analysis</h2>
+                    <p>Analyze Buy Box performance across all brand products</p>
+                </div>
+
+                <div class="tool-form">
+                    <div class="form-section">
+                        <label class="form-label fw-bold">Brand Name</label>
+                        <input type="text" class="form-control" placeholder="Enter brand name">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 form-section">
+                            <label class="form-label fw-bold">Retailer</label>
+                            <select class="form-select">
+                                <option selected>Amazon US</option>
+                                <option>Amazon CA</option>
+                                <option>Amazon UK</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 form-section">
+                            <label class="form-label fw-bold">Analysis Period</label>
+                            <select class="form-select">
+                                <option>Last 7 days</option>
+                                <option selected>Last 30 days</option>
+                                <option>Last 90 days</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary btn-lg">
+                        <i class="fas fa-chart-line"></i> Analyze Brand Performance
+                    </button>
+                </div>
+
+                <div class="results-section">
+                    <div class="results-placeholder">
+                        <i class="fas fa-medal fa-3x mb-3"></i>
+                        <p>Brand Buy Box performance metrics will appear here</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Indexing & Content Completeness -->
+            <div id="indexing" class="tool-content">
+                <div class="tool-header">
+                    <h2><i class="fas fa-check-circle"></i> Indexing & Content Completeness</h2>
+                    <p>Check if your keywords are indexed and analyze content quality</p>
+                </div>
+
+                <div class="tool-form">
+                    <div class="form-section">
+                        <label class="form-label fw-bold">ASIN</label>
+                        <input type="text" class="form-control" placeholder="Enter ASIN">
+                    </div>
+
+                    <div class="form-section">
+                        <label class="form-label fw-bold">Keywords to Check <span class="badge-info">Up to 50</span></label>
+                        <textarea class="form-control" rows="4" placeholder="Enter keywords (one per line)"></textarea>
+                    </div>
+
+                    <div class="form-section">
+                        <label class="form-label fw-bold">Retailer</label>
+                        <select class="form-select">
+                            <option selected>Amazon US</option>
+                            <option>Amazon CA</option>
+                            <option>Amazon UK</option>
+                        </select>
+                    </div>
+
+                    <button class="btn btn-primary btn-lg">
+                        <i class="fas fa-search"></i> Check Indexing
+                    </button>
+                </div>
+
+                <div class="results-section">
+                    <div class="results-placeholder">
+                        <i class="fas fa-tasks fa-3x mb-3"></i>
+                        <p>Indexing results and content analysis will be shown here</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bulk Indexing Audit -->
+            <div id="bulk-indexing" class="tool-content">
+                <div class="tool-header">
+                    <h2><i class="fas fa-clipboard-check"></i> Bulk Indexing Audit</h2>
+                    <p>Audit indexing status for multiple ASINs and keywords</p>
+                </div>
+
+                <div class="tool-form">
+                    <div class="form-section">
+                        <label class="form-label fw-bold">ASINs <span class="badge-info">Up to 20</span></label>
+                        <textarea class="form-control" rows="3" placeholder="Enter ASINs (one per line)"></textarea>
+                    </div>
+
+                    <div class="form-section">
+                        <label class="form-label fw-bold">Keywords <span class="badge-info">Up to 100</span></label>
+                        <textarea class="form-control" rows="4" placeholder="Enter keywords (one per line)"></textarea>
+                    </div>
+
+                    <div class="form-section">
+                        <label class="form-label fw-bold">Retailer</label>
+                        <select class="form-select">
+                            <option selected>Amazon US</option>
+                            <option>Amazon CA</option>
+                            <option>Amazon UK</option>
+                        </select>
+                    </div>
+
+                    <button class="btn btn-primary btn-lg">
+                        <i class="fas fa-clipboard-check"></i> Run Bulk Audit
+                    </button>
+                </div>
+
+                <div class="results-section">
+                    <div class="results-placeholder">
+                        <i class="fas fa-file-alt fa-3x mb-3"></i>
+                        <p>Comprehensive indexing audit report will be generated here</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+        // Handle tool navigation
+        document.querySelectorAll('.tool-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // Remove active class from all tools
+                document.querySelectorAll('.tool-item').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tool-content').forEach(c => c.classList.remove('active'));
+
+                // Add active class to clicked item
+                this.classList.add('active');
+
+                // Show corresponding content
+                const toolId = this.getAttribute('data-tool');
+                document.getElementById(toolId).classList.add('active');
+
+                // Scroll to top of content area
+                document.querySelector('.content-area').scrollTop = 0;
+            });
+        });
+
+        // Keyword Finder Tool Script
+        (function() {
+            let currentResults = null;
+            let isFormCollapsed = false;
+
+            const submitBtn = document.getElementById('kf-submit');
+            const clearBtn = document.getElementById('kf-clear');
+            const exportBtn = document.getElementById('kf-export');
+            const actionButtons = document.getElementById('kf-action-buttons');
+            const toUniverseBtn = document.getElementById('kf-to-universe');
+            const toHistoryBtn = document.getElementById('kf-to-history');
+            const formHeader = document.getElementById('kf-form-header');
+            const formFields = document.getElementById('kf-form-fields');
+            const collapseIcon = document.getElementById('kf-collapse-icon');
+            const formContainer = document.getElementById('kf-form-container');
+
+            // Toggle form collapse/expand
+            function toggleForm() {
+                isFormCollapsed = !isFormCollapsed;
+                if (isFormCollapsed) {
+                    formFields.style.display = 'none';
+                    collapseIcon.classList.remove('fa-chevron-up');
+                    collapseIcon.classList.add('fa-chevron-down');
+                } else {
+                    formFields.style.display = 'block';
+                    collapseIcon.classList.remove('fa-chevron-down');
+                    collapseIcon.classList.add('fa-chevron-up');
+                }
+            }
+
+            // Click to toggle
+            formHeader.addEventListener('click', toggleForm);
+
+            // Hover to expand
+            formContainer.addEventListener('mouseenter', () => {
+                if (isFormCollapsed) {
+                    toggleForm();
+                }
+            });
+
+            // Update placeholder based on search type
+            document.querySelectorAll('input[name="kf-search-type"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const inputField = document.getElementById('kf-search-term');
+
+                    if (this.value === 'asin-lookup') {
+                        inputField.placeholder = 'Enter up to 5 ASINs (comma-separated, e.g., B08N5WRWNW, B07XYZ1234)';
+                    } else if (this.value === 'exact-match') {
+                        inputField.placeholder = 'Enter exact keyword to match (e.g., wireless headphones)';
+                    } else {
+                        inputField.placeholder = 'Enter a seed keyword or phrase (e.g., wireless headphones)';
+                    }
+                });
+            });
+
+            // Submit button handler
+            submitBtn.addEventListener('click', handleSearch);
+
+            // Clear button handler
+            clearBtn.addEventListener('click', () => {
+                document.getElementById('kf-search-term').value = '';
+                document.getElementById('kf-results-section').style.display = 'none';
+                clearBtn.style.display = 'none';
+                exportBtn.style.display = 'none';
+                actionButtons.style.display = 'none';
+                currentResults = null;
+                // Expand form when cleared
+                if (isFormCollapsed) {
+                    toggleForm();
+                }
+            });
+
+            // Export button handler
+            exportBtn.addEventListener('click', exportToCSV);
+
+            // Action button handlers
+            toUniverseBtn.addEventListener('click', () => {
+                const selected = getSelectedKeywords();
+                if (selected.length === 0) {
+                    alert('Please select at least one keyword');
+                    return;
+                }
+
+                // Navigate to Keyword Universe tool
+                document.querySelector('[data-tool="keyword-universe"]').click();
+
+                // Populate the keywords field and auto-submit
+                setTimeout(() => {
+                    document.getElementById('ku-keywords').value = selected.join('\n');
+                    document.getElementById('ku-submit').click();
+                }, 150);
+            });
+
+            toHistoryBtn.addEventListener('click', () => {
+                const selected = getSelectedKeywords();
+                if (selected.length === 0) {
+                    alert('Please select at least one keyword');
+                    return;
+                }
+
+                // Navigate to Keyword History tool
+                document.querySelector('[data-tool="keyword-history"]').click();
+
+                // Populate the keywords field and auto-submit
+                setTimeout(() => {
+                    document.getElementById('kh-keywords').value = selected.join('\n');
+                    document.getElementById('kh-submit').click();
+                }, 150);
+            });
+
+            // Get selected keywords from checkboxes
+            function getSelectedKeywords() {
+                const checkboxes = document.querySelectorAll('.kf-keyword-checkbox:checked');
+                return Array.from(checkboxes).map(cb => cb.dataset.keyword);
+            }
+
+            // Handle checkbox state changes
+            function updateActionButtons() {
+                const selected = getSelectedKeywords();
+                if (selected.length > 0) {
+                    actionButtons.style.display = 'block';
+                } else {
+                    actionButtons.style.display = 'none';
+                }
+            }
+
+            // Enter key handler
+            document.getElementById('kf-search-term').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    handleSearch();
+                }
+            });
+
+            async function handleSearch() {
+                const searchTerm = document.getElementById('kf-search-term').value.trim();
+                const searchType = document.querySelector('input[name="kf-search-type"]:checked').value;
+
+                if (!searchTerm) {
+                    alert('Please enter a search phrase');
+                    return;
+                }
+
+                // Show loading state
+                const loadingDiv = document.getElementById('kf-loading');
+                const resultsSection = document.getElementById('kf-results-section');
+
+                resultsSection.style.display = 'none';
+                loadingDiv.style.display = 'block';
+
+                try {
+                    // Call the API based on search type
+                    const results = await fetchKeywords(searchTerm, searchType);
+
+                    // Display results
+                    displayResults(results, searchTerm);
+
+                    // Collapse form after successful search
+                    if (!isFormCollapsed) {
+                        toggleForm();
+                    }
+
+                } catch (error) {
+                    console.error('Error fetching keywords:', error);
+                    showError(error.message);
+                } finally {
+                    loadingDiv.style.display = 'none';
+                }
+            }
+
+            async function fetchKeywords(input, searchType) {
+                const response = await fetch('/api/keyword-finder', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        input: input,
+                        searchType: searchType
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                return data;
+            }
+
+            function displayResults(data, searchPhrase) {
+                if (!data || data.length === 0) {
+                    showError('No keywords found');
+                    return;
+                }
+
+                currentResults = data;
+
+                // First row is headers
+                const headers = data[0];
+                const rows = data.slice(1);
+
+                // Update result count
+                document.getElementById('kf-result-count').textContent = rows.length;
+
+                // Helper function to format numbers with commas
+                function formatNumber(value) {
+                    // Check if it's a number
+                    if (typeof value === 'number' || !isNaN(value)) {
+                        return Number(value).toLocaleString('en-US');
+                    }
+                    return value;
+                }
+
+                // Build table HTML
+                const tableHTML = `
+                    <div class="table-responsive">
+                        <table class="table table-sm table-striped table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 40px; text-align: center;">
+                                        <input type="checkbox" id="kf-select-all" title="Select all">
+                                    </th>
+                                    ${headers.map(header => `<th>${header}</th>`).join('')}
+                                    <th style="width: 50px;"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${rows.map((row, idx) => {
+                                    // Get the keyword (should be in column index 1 based on your API structure)
+                                    const keyword = row[1] || row[0]; // Fallback to first column if needed
+                                    const amazonUrl = `https://www.amazon.com/s?k=${encodeURIComponent(keyword)}`;
+
+                                    return `
+                                    <tr>
+                                        <td class="text-center">
+                                            <input type="checkbox" class="kf-keyword-checkbox" data-keyword="${keyword}">
+                                        </td>
+                                        ${row.map((cell, cellIdx) => `
+                                            <td>${cellIdx === 0 ? `<strong>${formatNumber(cell)}</strong>` : formatNumber(cell)}</td>
+                                        `).join('')}
+                                        <td class="text-center">
+                                            <a href="${amazonUrl}" target="_blank" title="Search '${keyword}' on Amazon" class="amazon-link">
+                                                <i class="fab fa-amazon"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                `}).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+
+                document.getElementById('kf-results').innerHTML = tableHTML;
+                document.getElementById('kf-results-section').style.display = 'block';
+                clearBtn.style.display = 'inline-block';
+                exportBtn.style.display = 'inline-block';
+
+                // Add event listeners to checkboxes
+                document.querySelectorAll('.kf-keyword-checkbox').forEach(checkbox => {
+                    checkbox.addEventListener('change', updateActionButtons);
+                });
+
+                // Select all checkbox
+                document.getElementById('kf-select-all').addEventListener('change', function() {
+                    const checkboxes = document.querySelectorAll('.kf-keyword-checkbox');
+                    checkboxes.forEach(cb => cb.checked = this.checked);
+                    updateActionButtons();
+                });
+
+                // Auto-select top 10 keywords
+                const checkboxes = document.querySelectorAll('.kf-keyword-checkbox');
+                checkboxes.forEach((checkbox, idx) => {
+                    if (idx < 10) {
+                        checkbox.checked = true;
+                    }
+                });
+                updateActionButtons();
+            }
+
+            function showError(message) {
+                const resultsSection = document.getElementById('kf-results-section');
+                const resultsDiv = document.getElementById('kf-results');
+
+                resultsDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Error:</strong> ${message}
+                    </div>
+                `;
+
+                resultsSection.style.display = 'block';
+            }
+
+            function exportToCSV() {
+                if (!currentResults) return;
+
+                // Convert array to CSV
+                const csv = currentResults.map(row =>
+                    row.map(cell => `"${cell}"`).join(',')
+                ).join('\n');
+
+                // Create download link
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `keyword-finder-results-${new Date().getTime()}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }
+        })();
+
+        // Keyword Universe Generator Tool Script
+        (function() {
+            let currentResults = null;
+            let isFormCollapsed = false;
+
+            const submitBtn = document.getElementById('ku-submit');
+            const clearBtn = document.getElementById('ku-clear');
+            const exportBtn = document.getElementById('ku-export');
+            const formHeader = document.getElementById('ku-form-header');
+            const formFields = document.getElementById('ku-form-fields');
+            const collapseIcon = document.getElementById('ku-collapse-icon');
+            const formContainer = document.getElementById('ku-form-container');
+
+            // Toggle form collapse/expand
+            function toggleForm() {
+                isFormCollapsed = !isFormCollapsed;
+                if (isFormCollapsed) {
+                    formFields.style.display = 'none';
+                    collapseIcon.classList.remove('fa-chevron-up');
+                    collapseIcon.classList.add('fa-chevron-down');
+                } else {
+                    formFields.style.display = 'block';
+                    collapseIcon.classList.remove('fa-chevron-down');
+                    collapseIcon.classList.add('fa-chevron-up');
+                }
+            }
+
+            // Click to toggle
+            formHeader.addEventListener('click', toggleForm);
+
+            // Hover to expand
+            formContainer.addEventListener('mouseenter', () => {
+                if (isFormCollapsed) {
+                    toggleForm();
+                }
+            });
+
+            // Submit button handler
+            submitBtn.addEventListener('click', handleGenerate);
+
+            // Clear button handler
+            clearBtn.addEventListener('click', () => {
+                document.getElementById('ku-keywords').value = '';
+                document.getElementById('ku-asins').value = '';
+                document.getElementById('ku-results-section').style.display = 'none';
+                clearBtn.style.display = 'none';
+                exportBtn.style.display = 'none';
+                currentResults = null;
+                // Expand form when cleared
+                if (isFormCollapsed) {
+                    toggleForm();
+                }
+            });
+
+            // Export button handler
+            exportBtn.addEventListener('click', exportToCSV);
+
+            async function handleGenerate() {
+                const keywords = document.getElementById('ku-keywords').value.trim();
+                const asins = document.getElementById('ku-asins').value.trim();
+                const levels = parseInt(document.getElementById('ku-levels').value);
+
+                if (!keywords && !asins) {
+                    alert('Please enter either keywords or ASINs (or both)');
+                    return;
+                }
+
+                // Show loading state
+                const loadingDiv = document.getElementById('ku-loading');
+                const resultsSection = document.getElementById('ku-results-section');
+
+                resultsSection.style.display = 'none';
+                loadingDiv.style.display = 'block';
+
+                try {
+                    const results = await fetchKeywordUniverse(keywords, asins, levels);
+                    displayResults(results);
+                    // Collapse form after successful search
+                    if (!isFormCollapsed) {
+                        toggleForm();
+                    }
+                } catch (error) {
+                    console.error('Error generating keyword universe:', error);
+                    showError(error.message);
+                } finally {
+                    loadingDiv.style.display = 'none';
+                }
+            }
+
+            async function fetchKeywordUniverse(keywords, asins, levels) {
+                const response = await fetch('/api/keyword-universe', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        keywords: keywords,
+                        asins: asins,
+                        levels: levels
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                return data;
+            }
+
+            function displayResults(data) {
+                if (!data || data.length === 0) {
+                    showError('No keywords found');
+                    return;
+                }
+
+                currentResults = data;
+
+                // First row is headers
+                const headers = data[0];
+                const rows = data.slice(1);
+
+                // Update result count
+                document.getElementById('ku-result-count').textContent = rows.length;
+
+                // Helper function to format numbers with commas
+                function formatNumber(value) {
+                    if (typeof value === 'number' || !isNaN(value)) {
+                        return Number(value).toLocaleString('en-US');
+                    }
+                    return value;
+                }
+
+                // Helper function to format percentages
+                function formatPercent(value) {
+                    if (typeof value === 'number' && value >= 0 && value <= 1) {
+                        return (value * 100).toFixed(1) + '%';
+                    }
+                    return value;
+                }
+
+                // Helper function to create ASIN link
+                function formatAsin(asin) {
+                    if (!asin || asin.trim() === '') {
+                        return '';
+                    }
+                    return `<a href="https://www.amazon.com/dp/${asin}" target="_blank" style="color: #FF9900; text-decoration: none;">${asin}</a>`;
+                }
+
+                // Build table HTML
+                const tableHTML = `
+                    <div class="table-responsive">
+                        <table class="table table-sm table-striped table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    ${headers.map(header => `<th>${header}</th>`).join('')}
+                                    <th style="width: 50px;"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${rows.map((row, idx) => {
+                                    const keyword = row[0];
+                                    const level = row[2];
+                                    const amazonUrl = `https://www.amazon.com/s?k=${encodeURIComponent(keyword)}`;
+
+                                    // Check if level changed from previous row (for separator)
+                                    const needsSeparator = idx > 0 && rows[idx - 1][2] !== level;
+                                    const separatorClass = needsSeparator ? 'style="border-top: 3px solid #00b8d4;"' : '';
+
+                                    return `
+                                    <tr ${separatorClass}>
+                                        ${row.map((cell, cellIdx) => {
+                                            let formattedCell = cell;
+                                            // Format ASINs (columns 4, 5, 6 - indices in 0-based array)
+                                            if (cellIdx >= 4 && cellIdx <= 6) {
+                                                formattedCell = formatAsin(cell);
+                                            }
+                                            // Format percentages (columns 7-12 are click/conv shares)
+                                            else if (cellIdx >= 7 && cellIdx <= 12) {
+                                                formattedCell = formatPercent(cell);
+                                            } else if (cellIdx === 1) {
+                                                // Search volume
+                                                formattedCell = formatNumber(cell);
+                                            }
+                                            return `<td>${formattedCell}</td>`;
+                                        }).join('')}
+                                        <td class="text-center">
+                                            <a href="${amazonUrl}" target="_blank" title="Search '${keyword}' on Amazon" class="amazon-link">
+                                                <i class="fab fa-amazon"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                `}).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+
+                document.getElementById('ku-results').innerHTML = tableHTML;
+                document.getElementById('ku-results-section').style.display = 'block';
+                clearBtn.style.display = 'inline-block';
+                exportBtn.style.display = 'inline-block';
+            }
+
+            function showError(message) {
+                const resultsSection = document.getElementById('ku-results-section');
+                const resultsDiv = document.getElementById('ku-results');
+
+                resultsDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Error:</strong> ${message}
+                    </div>
+                `;
+
+                resultsSection.style.display = 'block';
+            }
+
+            function exportToCSV() {
+                if (!currentResults) return;
+
+                const csv = currentResults.map(row =>
+                    row.map(cell => `"${cell}"`).join(',')
+                ).join('\n');
+
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `keyword-universe-${new Date().getTime()}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }
+        })();
+
+        // Keyword History Tool Script
+        (function() {
+            let currentResults = null;
+            let isFormCollapsed = false;
+            let chart = null;
+
+            const submitBtn = document.getElementById('kh-submit');
+            const clearBtn = document.getElementById('kh-clear');
+            const exportBtn = document.getElementById('kh-export');
+            const formHeader = document.getElementById('kh-form-header');
+            const formFields = document.getElementById('kh-form-fields');
+            const collapseIcon = document.getElementById('kh-collapse-icon');
+            const formContainer = document.getElementById('kh-form-container');
+
+            // Toggle form collapse/expand
+            function toggleForm() {
+                isFormCollapsed = !isFormCollapsed;
+                if (isFormCollapsed) {
+                    formFields.style.display = 'none';
+                    collapseIcon.classList.remove('fa-chevron-up');
+                    collapseIcon.classList.add('fa-chevron-down');
+                } else {
+                    formFields.style.display = 'block';
+                    collapseIcon.classList.remove('fa-chevron-down');
+                    collapseIcon.classList.add('fa-chevron-up');
+                }
+            }
+
+            // Click to toggle
+            formHeader.addEventListener('click', toggleForm);
+
+            // Hover to expand
+            formContainer.addEventListener('mouseenter', () => {
+                if (isFormCollapsed) {
+                    toggleForm();
+                }
+            });
+
+            // Submit button handler
+            submitBtn.addEventListener('click', handleViewHistory);
+
+            // Clear button handler
+            clearBtn.addEventListener('click', () => {
+                document.getElementById('kh-keywords').value = '';
+                document.getElementById('kh-results-section').style.display = 'none';
+                clearBtn.style.display = 'none';
+                exportBtn.style.display = 'none';
+                currentResults = null;
+                if (chart) {
+                    chart.destroy();
+                    chart = null;
+                }
+                if (isFormCollapsed) {
+                    toggleForm();
+                }
+            });
+
+            // Export button handler
+            exportBtn.addEventListener('click', exportToCSV);
+
+            async function handleViewHistory() {
+                const keywords = document.getElementById('kh-keywords').value.trim();
+
+                if (!keywords) {
+                    alert('Please enter at least one keyword');
+                    return;
+                }
+
+                const loadingDiv = document.getElementById('kh-loading');
+                const resultsSection = document.getElementById('kh-results-section');
+
+                resultsSection.style.display = 'none';
+                loadingDiv.style.display = 'block';
+
+                try {
+                    const results = await fetchKeywordHistory(keywords);
+                    displayResults(results);
+                    if (!isFormCollapsed) {
+                        toggleForm();
+                    }
+                } catch (error) {
+                    console.error('Error fetching keyword history:', error);
+                    showError(error.message);
+                } finally {
+                    loadingDiv.style.display = 'none';
+                }
+            }
+
+            async function fetchKeywordHistory(keywords) {
+                const response = await fetch('/api/keyword-history', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        keywords: keywords
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                return data;
+            }
+
+            function displayResults(data) {
+                if (!data || data.length === 0) {
+                    showError('No historical data found');
+                    return;
+                }
+
+                currentResults = data;
+
+                // First row is headers: Date, Keyword1, Keyword2, etc.
+                const headers = data[0];
+                const rows = data.slice(1);
+
+                // Prepare data for Chart.js
+                const dates = rows.map(row => row[0]);
+                const keywords = headers.slice(1); // All columns except Date
+
+                // Create datasets for each keyword
+                const datasets = keywords.map((keyword, idx) => {
+                    const colorIndex = idx % 10;
+                    const colors = [
+                        '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
+                        '#FF9F40', '#FF6384', '#C9CBCF', '#4BC0C0', '#FF6384'
+                    ];
+
+                    return {
+                        label: keyword,
+                        data: rows.map(row => row[idx + 1]),
+                        borderColor: colors[colorIndex],
+                        backgroundColor: colors[colorIndex] + '33',
+                        tension: 0.4,
+                        fill: false
+                    };
+                });
+
+                // Destroy previous chart if exists
+                if (chart) {
+                    chart.destroy();
+                }
+
+                // Create new chart
+                const ctx = document.getElementById('kh-chart').getContext('2d');
+                chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: dates,
+                        datasets: datasets
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        aspectRatio: 2.5,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Keyword Search Volume Over Time',
+                                font: {
+                                    size: 16,
+                                    weight: 'bold'
+                                }
+                            },
+                            legend: {
+                                display: true,
+                                position: 'bottom'
+                            },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Search Volume'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Date'
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // Build table HTML
+                function formatNumber(value) {
+                    if (value === '' || value === null || value === undefined) return '';
+                    if (typeof value === 'number' || !isNaN(value)) {
+                        return Number(value).toLocaleString('en-US');
+                    }
+                    return value;
+                }
+
+                const tableHTML = `
+                    <div class="table-responsive">
+                        <table class="table table-sm table-striped table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    ${headers.map(header => `<th>${header}</th>`).join('')}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${rows.map(row => `
+                                    <tr>
+                                        ${row.map((cell, idx) => `
+                                            <td>${idx === 0 ? cell : formatNumber(cell)}</td>
+                                        `).join('')}
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+
+                document.getElementById('kh-results').innerHTML = tableHTML;
+                document.getElementById('kh-results-section').style.display = 'block';
+                clearBtn.style.display = 'inline-block';
+                exportBtn.style.display = 'inline-block';
+            }
+
+            function showError(message) {
+                const resultsSection = document.getElementById('kh-results-section');
+                const resultsDiv = document.getElementById('kh-results');
+
+                resultsDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Error:</strong> ${message}
+                    </div>
+                `;
+
+                resultsSection.style.display = 'block';
+            }
+
+            function exportToCSV() {
+                if (!currentResults) return;
+
+                const csv = currentResults.map(row =>
+                    row.map(cell => `"${cell}"`).join(',')
+                ).join('\n');
+
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `keyword-history-${new Date().getTime()}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }
+        })();
+    </script>
+</body>
+</html>

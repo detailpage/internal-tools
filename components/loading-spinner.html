@@ -1,0 +1,156 @@
+<!-- LOADING SPINNER COMPONENT -->
+<!-- Copy this into your tool content div (between form and results) -->
+
+<div id="tool-loading" style="display:none;">
+  <div class="text-center py-4">
+    <div class="spinner-border text-primary mb-3" role="status" style="color: #00b8d4 !important; width: 3rem; height: 3rem;">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p style="color: #777; font-size: 0.875rem;">Searching for keywords...</p>
+  </div>
+</div>
+
+<!-- ALTERNATIVE: Simple Loading Text -->
+<!--
+<div id="tool-loading" style="display:none;">
+  <div class="loading-placeholder">
+    <i class="fas fa-circle-notch fa-spin fa-3x mb-3" style="color: #00b8d4;"></i>
+    <p>Loading data...</p>
+  </div>
+</div>
+-->
+
+<!-- ALTERNATIVE: Loading with Progress Message -->
+<!--
+<div id="tool-loading" style="display:none;">
+  <div class="text-center py-4">
+    <div class="spinner-border mb-3" style="color: #00b8d4; width: 2.5rem; height: 2.5rem;"></div>
+    <p style="color: #777; font-weight: 500;" id="tool-loading-message">Initializing search...</p>
+  </div>
+</div>
+-->
+
+<!-- REQUIRED STYLES -->
+<style>
+  #tool-loading {
+    background: white;
+    padding: 2rem 1.5rem;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    margin-bottom: 1.5rem;
+  }
+
+  .loading-placeholder {
+    background-color: #ffffff;
+    border: 2px dashed #dee2e6;
+    border-radius: 6px;
+    padding: 2rem;
+    text-align: center;
+    color: #777;
+  }
+
+  .loading-placeholder p {
+    margin: 0;
+    font-size: 0.875rem;
+  }
+
+  .spinner-border {
+    border-width: 0.3em;
+  }
+</style>
+
+<!-- REQUIRED JAVASCRIPT -->
+<script>
+  (function() {
+    const loadingDiv = document.getElementById('tool-loading');
+
+    // Function to show loading spinner
+    function showLoading(message = 'Loading...') {
+      loadingDiv.style.display = 'block';
+
+      // If you're using the progress message variant, update the message
+      const messageElement = document.getElementById('tool-loading-message');
+      if (messageElement) {
+        messageElement.textContent = message;
+      }
+    }
+
+    // Function to hide loading spinner
+    function hideLoading() {
+      loadingDiv.style.display = 'none';
+    }
+
+    // Make functions globally available
+    window.toolShowLoading = showLoading;
+    window.toolHideLoading = hideLoading;
+
+    // Example usage in your submit handler:
+    /*
+    async function handleSubmit() {
+      showLoading('Searching for keywords...');
+      try {
+        const data = await fetchData();
+        displayResults(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        hideLoading();
+      }
+    }
+    */
+
+  })();
+</script>
+
+<!-- USAGE INSTRUCTIONS -->
+<!--
+1. Copy this component into your tool's content div
+2. Place it between your form and results section
+3. Replace "tool-" prefix with your tool's prefix
+4. Call showLoading() before API request
+5. Call hideLoading() in the finally block after request completes
+
+Example integration:
+
+<div id="my-tool" class="tool-content">
+  <div class="tool-form">...</div>           <!-- Form -->
+  <div id="tool-loading">...</div>           <!-- This component -->
+  <div class="results-section">...</div>     <!-- Results -->
+</div>
+
+In your JavaScript:
+  async function handleSubmit() {
+    const loadingDiv = document.getElementById('tool-loading');
+    const resultsSection = document.getElementById('tool-results-section');
+
+    loadingDiv.style.display = 'block';
+    resultsSection.style.display = 'none';
+
+    try {
+      const response = await fetch('/api/endpoint', {...});
+      const data = await response.json();
+      displayResults(data);
+    } catch (error) {
+      showError(error.message);
+    } finally {
+      loadingDiv.style.display = 'none';
+    }
+  }
+
+Customization:
+- Change the message: Update the <p> text
+- Change spinner color: Update style="color: #00b8d4"
+- Change spinner size: Update width/height in style
+- Use different icon: Replace spinner-border with Font Awesome icon
+  (e.g., <i class="fas fa-circle-notch fa-spin"></i>)
+
+Required Bootstrap classes:
+- spinner-border, text-primary
+- text-center, py-4, mb-3
+- visually-hidden
+
+Brand colors:
+- Cyan: #00b8d4 (primary)
+- Gray text: #777
+- Border: #dee2e6
+-->

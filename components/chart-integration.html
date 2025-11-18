@@ -1,0 +1,245 @@
+<!-- CHART.JS INTEGRATION COMPONENT -->
+<!-- For displaying time-series data with line charts -->
+
+<!-- Canvas element for chart -->
+<div class="chart-container" style="background: white; padding: 1.5rem; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 1.5rem;">
+  <canvas id="tool-chart" style="max-height: 400px;"></canvas>
+</div>
+
+<!-- REQUIRED: Chart.js CDN in <head> -->
+<!--
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+-->
+
+<!-- REQUIRED JAVASCRIPT -->
+<script>
+  (function() {
+    let chart = null; // Store chart instance
+
+    const chartColors = [
+      '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
+      '#FF9F40', '#FF6384', '#C9CBCF', '#4BC0C0', '#FF6384'
+    ];
+
+    // Create or update chart
+    function createChart(data) {
+      const ctx = document.getElementById('tool-chart').getContext('2d');
+
+      // Destroy previous chart if exists
+      if (chart) {
+        chart.destroy();
+      }
+
+      // Parse data (assuming array-of-arrays format)
+      // First row: headers (Date, Keyword1, Keyword2, ...)
+      // Subsequent rows: data values
+
+      const headers = data[0];
+      const rows = data.slice(1);
+
+      // Extract dates (first column)
+      const labels = rows.map(row => row[0]);
+
+      // Create datasets (one per keyword)
+      const datasets = [];
+      for (let i = 1; i < headers.length; i++) {
+        const keywordName = headers[i];
+        const keywordData = rows.map(row => row[i]);
+
+        datasets.push({
+          label: keywordName,
+          data: keywordData,
+          borderColor: chartColors[(i - 1) % chartColors.length],
+          backgroundColor: chartColors[(i - 1) % chartColors.length] + '33', // Add opacity
+          tension: 0.4,
+          fill: true,
+          pointRadius: 3,
+          pointHoverRadius: 5
+        });
+      }
+
+      // Create chart
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: datasets
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          aspectRatio: 2.5,
+          interaction: {
+            mode: 'index',
+            intersect: false
+          },
+          plugins: {
+            title: {
+              display: true,
+              text: 'Keyword Search Volume History',
+              font: {
+                size: 16,
+                weight: 'bold'
+              }
+            },
+            legend: {
+              display: true,
+              position: 'bottom',
+              labels: {
+                usePointStyle: true,
+                padding: 15
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  let label = context.dataset.label || '';
+                  if (label) {
+                    label += ': ';
+                  }
+                  if (context.parsed.y !== null) {
+                    label += context.parsed.y.toLocaleString('en-US');
+                  }
+                  return label;
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: function(value) {
+                  return value.toLocaleString('en-US');
+                }
+              }
+            },
+            x: {
+              ticks: {
+                maxRotation: 45,
+                minRotation: 45
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Make function globally available
+    window.toolCreateChart = createChart;
+
+  })();
+</script>
+
+<!-- EXAMPLE DATA FORMAT -->
+<!--
+const exampleData = [
+  ['Date', 'coffee maker', 'espresso machine', 'french press'],
+  ['2024-01', 12500, 8500, 3200],
+  ['2024-02', 13200, 9100, 3500],
+  ['2024-03', 11800, 8900, 3100],
+  ['2024-04', 14500, 10200, 3800]
+];
+
+// Call the function
+window.toolCreateChart(exampleData);
+-->
+
+<!-- ALTERNATIVE: Bar Chart Configuration -->
+<!--
+chart = new Chart(ctx, {
+  type: 'bar',
+  data: { ... },
+  options: {
+    responsive: true,
+    plugins: {
+      title: {
+        display: true,
+        text: 'Search Volume Comparison'
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    }
+  }
+});
+-->
+
+<!-- ALTERNATIVE: Doughnut Chart Configuration -->
+<!--
+chart = new Chart(ctx, {
+  type: 'doughnut',
+  data: {
+    labels: ['Category 1', 'Category 2', 'Category 3'],
+    datasets: [{
+      data: [300, 50, 100],
+      backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'bottom'
+      }
+    }
+  }
+});
+-->
+
+<!-- USAGE INSTRUCTIONS -->
+<!--
+1. Add Chart.js CDN to your HTML <head>:
+   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+
+2. Copy this component into your tool's content div
+
+3. Replace "tool-" prefix with your tool's prefix
+
+4. Call createChart(data) with your data in array-of-arrays format:
+   - First row: column headers (Date/Label, Series1, Series2, ...)
+   - Subsequent rows: data values
+
+5. The chart will automatically update when you call createChart() again
+
+Example integration:
+
+async function displayResults(data) {
+  // Show chart
+  window.toolCreateChart(data);
+
+  // Also show data table below chart if needed
+  displayDataTable(data);
+}
+
+Customization:
+- Chart type: Change 'line' to 'bar', 'doughnut', 'radar', etc.
+- Colors: Modify chartColors array
+- Aspect ratio: Change aspectRatio value (2.5 = wide, 1 = square)
+- Fill area: Set fill: false to remove area fill
+- Point size: Adjust pointRadius and pointHoverRadius
+- Title: Update text in plugins.title.text
+- Legend position: Change position to 'top', 'left', 'right', 'bottom'
+
+Chart.js documentation: https://www.chartjs.org/docs/latest/
+
+Features included:
+- 10-color palette matching BlueCitrus brand
+- Responsive sizing
+- Formatted tooltips with commas
+- Formatted Y-axis labels with commas
+- Legend at bottom
+- Hover interactions
+- Auto-destroy previous chart before creating new one
+
+Brand colors used:
+- Pink: #FF6384
+- Blue: #36A2EB
+- Yellow: #FFCE56
+- Teal: #4BC0C0
+- Purple: #9966FF
+- Orange: #FF9F40
+- Gray: #C9CBCF
+-->

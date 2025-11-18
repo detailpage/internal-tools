@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:api.bluecitrus.co)",
+      "Bash(move AI_CODING_GUIDE.md ai-coding-training )",
+      "Bash(move API_INTEGRATION.md ai-coding-training )",
+      "Bash(move TEMPLATE.html ai-coding-training )",
+      "Bash(xcopy:*)",
+      "Bash(cmd /c \"move AI_CODING_GUIDE.md ai-coding-training\\ && move API_INTEGRATION.md ai-coding-training\\ && move TEMPLATE.html ai-coding-training\\ && xcopy /E /I /Y components ai-coding-training\\components\")",
+      "Bash(powershell:*)",
+      "Bash(dir:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run dev:*)",
+      "Bash(timeout:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

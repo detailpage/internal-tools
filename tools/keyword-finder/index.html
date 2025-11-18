@@ -1,0 +1,55 @@
+<div class="tool-header">
+    <h2><i class="fas fa-search"></i> Keyword Finder</h2>
+    <p>Discover related keywords using AI-powered BlueCitrus API</p>
+</div>
+
+<div class="tool-form">
+    <div class="row">
+        <div class="col-md-8 form-section">
+            <label class="form-label">Search Phrase</label>
+            <input type="text" class="form-control" id="kf-search-term" placeholder="Enter a seed keyword or phrase (e.g., 'wireless headphones')">
+            <small class="form-text text-muted">Enter keywords to find semantically related search terms</small>
+        </div>
+
+        <div class="col-md-4 form-section">
+            <label class="form-label">Number of Keywords</label>
+            <select class="form-select" id="kf-num-keywords">
+                <option value="10" selected>10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="250">250</option>
+                <option value="500">500</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-section">
+        <button class="btn btn-primary" id="kf-submit">
+            <i class="fas fa-search"></i> Find Keywords
+        </button>
+        <button class="btn btn-secondary ms-2" id="kf-clear" style="display:none;">
+            <i class="fas fa-times"></i> Clear Results
+        </button>
+        <button class="btn btn-secondary ms-2" id="kf-export" style="display:none;">
+            <i class="fas fa-download"></i> Export CSV
+        </button>
+    </div>
+</div>
+
+<div class="results-section" id="kf-results-section" style="display:none;">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <h5 class="mb-0">Results (<span id="kf-result-count">0</span> keywords found)</h5>
+        <small class="text-muted">Search phrase: <strong id="kf-search-phrase"></strong></small>
+    </div>
+    <div id="kf-results"></div>
+</div>
+
+<div id="kf-loading" style="display:none;">
+    <div class="text-center py-4">
+        <div class="spinner-border text-primary mb-3" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p>Searching for related keywords...</p>
+    </div>
+</div>

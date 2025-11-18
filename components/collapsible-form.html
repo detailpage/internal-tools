@@ -1,0 +1,210 @@
+<!-- COLLAPSIBLE FORM COMPONENT -->
+<!-- Copy this into your tool content div -->
+
+<div class="tool-form" id="tool-form-container">
+  <!-- Collapsible Header -->
+  <div id="tool-form-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; cursor: pointer; padding: 0.5rem; background-color: #f8f9fa; border-radius: 4px;">
+    <span style="font-weight: 600; color: #333;">
+      <i class="fas fa-search"></i> Search Parameters
+    </span>
+    <i class="fas fa-chevron-up" id="tool-collapse-icon"></i>
+  </div>
+
+  <!-- Form Fields (collapsible section) -->
+  <div id="tool-form-fields">
+    <div class="row">
+      <!-- Text Input Example -->
+      <div class="col-md-6">
+        <label class="form-label">
+          Search Term
+          <i class="fas fa-question-circle" style="color: #00b8d4; cursor: help; font-size: 0.85rem;" title="Enter keywords or phrases to search for"></i>
+        </label>
+        <input type="text" class="form-control" id="tool-input" placeholder="Enter search term">
+      </div>
+
+      <!-- Dropdown Example -->
+      <div class="col-md-6">
+        <label class="form-label">Search Type</label>
+        <select class="form-select" id="tool-select">
+          <option value="option1">Option 1</option>
+          <option value="option2">Option 2</option>
+          <option value="option3">Option 3</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Textarea Example -->
+    <div style="margin-top: 1.5rem;">
+      <label class="form-label">
+        Keywords
+        <span class="badge-info">Up to 10</span>
+      </label>
+      <textarea class="form-control" id="tool-textarea" rows="4" placeholder="Enter keywords (one per line)"></textarea>
+    </div>
+
+    <!-- Submit Button -->
+    <div style="margin-top: 1.5rem;">
+      <button class="btn btn-primary" id="tool-submit">
+        <i class="fas fa-search"></i> Search
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- REQUIRED STYLES -->
+<style>
+  .tool-form {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    margin-bottom: 1.5rem;
+  }
+
+  .form-control, .form-select {
+    border: 1px solid #d0d0d0;
+    border-radius: 4px;
+    padding: 0.5rem 0.65rem;
+    font-size: 0.875rem;
+  }
+
+  .form-control:focus, .form-select:focus {
+    border-color: #00b8d4;
+    box-shadow: 0 0 0 0.2rem rgba(0, 184, 212, 0.15);
+    outline: none;
+  }
+
+  .form-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 0.35rem;
+    display: block;
+  }
+
+  .badge-info {
+    background-color: #00b8d4;
+    color: white;
+    font-weight: 500;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    margin-left: 0.4rem;
+  }
+
+  .btn-primary {
+    background-color: #FFA500;
+    border-color: #FFA500;
+    font-weight: 600;
+    padding: 0.5rem 1.5rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+  }
+
+  .btn-primary:hover {
+    background-color: #ff9500;
+    border-color: #ff9500;
+  }
+</style>
+
+<!-- REQUIRED JAVASCRIPT -->
+<script>
+  (function() {
+    let isFormCollapsed = false;
+
+    const formContainer = document.getElementById('tool-form-container');
+    const formHeader = document.getElementById('tool-form-header');
+    const formFields = document.getElementById('tool-form-fields');
+    const collapseIcon = document.getElementById('tool-collapse-icon');
+    const submitBtn = document.getElementById('tool-submit');
+    const inputField = document.getElementById('tool-input');
+
+    // Toggle form collapse
+    function toggleForm() {
+      isFormCollapsed = !isFormCollapsed;
+      if (isFormCollapsed) {
+        formFields.style.display = 'none';
+        collapseIcon.classList.remove('fa-chevron-up');
+        collapseIcon.classList.add('fa-chevron-down');
+      } else {
+        formFields.style.display = 'block';
+        collapseIcon.classList.remove('fa-chevron-down');
+        collapseIcon.classList.add('fa-chevron-up');
+      }
+    }
+
+    // Click to toggle
+    formHeader.addEventListener('click', toggleForm);
+
+    // Hover to expand when collapsed
+    formContainer.addEventListener('mouseenter', () => {
+      if (isFormCollapsed) {
+        toggleForm();
+      }
+    });
+
+    // Handle form submission
+    async function handleSubmit() {
+      const inputValue = inputField.value.trim();
+
+      // Validate
+      if (!inputValue) {
+        alert('Please enter a search term');
+        return;
+      }
+
+      // Show loading (you'll need to add a loading div)
+      console.log('Searching for:', inputValue);
+
+      try {
+        // Call your API here
+        // const response = await fetch('/api/your-endpoint', { ... });
+        // const data = await response.json();
+        // displayResults(data);
+
+        // Collapse form after successful search
+        if (!isFormCollapsed) {
+          toggleForm();
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Search failed: ' + error.message);
+      }
+    }
+
+    // Submit button click
+    submitBtn.addEventListener('click', handleSubmit);
+
+    // Enter key to submit
+    inputField.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        handleSubmit();
+      }
+    });
+
+  })(); // IIFE to scope variables
+</script>
+
+<!-- USAGE INSTRUCTIONS -->
+<!--
+1. Copy this entire component into your tool's content div
+2. Replace all "tool-" IDs with your tool's prefix (e.g., "kf-", "ku-")
+3. Update form fields to match your tool's requirements
+4. Implement the API call in handleSubmit()
+5. Add a loading div and results div below this form
+
+ID naming convention: {tool-shortname}-{element}
+Examples: kf-submit, ku-input, kh-form-header
+
+Required Bootstrap classes:
+- row, col-md-6
+- form-control, form-select, form-label
+- btn, btn-primary
+
+Required Font Awesome icons:
+- fas fa-search (search icon)
+- fas fa-chevron-up (expand indicator)
+- fas fa-chevron-down (collapse indicator)
+- fas fa-question-circle (help tooltip)
+-->

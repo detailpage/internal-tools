@@ -1,0 +1,167 @@
+<!-- NAVIGATION SIDEBAR COMPONENT -->
+<!-- Copy this into your HTML body -->
+
+<aside class="sidebar scrollbar-thin">
+  <div class="sidebar-section-header">
+    <i class="fas fa-tools"></i>
+    <h6>CLIENT TOOLS</h6>
+  </div>
+
+  <div class="tool-category">
+    <div class="tool-category-title">KEYWORD RESEARCH</div>
+    <ul class="tool-list">
+      <li class="tool-item active" data-tool="keyword-finder">Keyword Finder</li>
+      <li class="tool-item" data-tool="keyword-universe">Keyword Universe Generator</li>
+      <li class="tool-item" data-tool="keyword-history">Keyword History</li>
+    </ul>
+  </div>
+
+  <div class="tool-category">
+    <div class="tool-category-title">ANALYTICS</div>
+    <ul class="tool-list">
+      <li class="tool-item" data-tool="market-analysis">Market Analysis</li>
+      <li class="tool-item" data-tool="competitor-research">Competitor Research</li>
+    </ul>
+  </div>
+</aside>
+
+<!-- REQUIRED STYLES -->
+<style>
+  .sidebar {
+    width: 260px;
+    background: white;
+    overflow-y: auto;
+    height: 100%;
+  }
+
+  .sidebar-section-header {
+    padding: 1.25rem 1.25rem 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .sidebar-section-header i {
+    color: #00b8d4;
+    font-size: 1.1rem;
+  }
+
+  .sidebar-section-header h6 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: #333;
+  }
+
+  .tool-category {
+    margin-bottom: 1.25rem;
+  }
+
+  .tool-category-title {
+    padding: 0.6rem 1.25rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #777;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .tool-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .tool-item {
+    padding: 0.55rem 1.25rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    color: #555;
+    border-left: 3px solid transparent;
+    background-color: transparent;
+    transition: all 0.15s ease;
+  }
+
+  .tool-item:hover {
+    background-color: #f8f9fa;
+    color: #00b8d4;
+    border-left-color: #e0e0e0;
+  }
+
+  .tool-item.active {
+    background-color: #e8f7fa;
+    color: #00b8d4;
+    border-left-color: #00b8d4;
+    font-weight: 500;
+  }
+
+  /* Custom scrollbar */
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+</style>
+
+<!-- REQUIRED JAVASCRIPT -->
+<script>
+  // Add click handlers to all tool items
+  document.querySelectorAll('.tool-item').forEach(item => {
+    item.addEventListener('click', function() {
+      // Remove active class from all items and tools
+      document.querySelectorAll('.tool-item').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tool-content').forEach(c => c.classList.remove('active'));
+
+      // Add active class to clicked item
+      this.classList.add('active');
+      const toolId = this.getAttribute('data-tool');
+      const toolElement = document.getElementById(toolId);
+
+      if (toolElement) {
+        toolElement.classList.add('active');
+      }
+
+      // Scroll to top of content area
+      const contentArea = document.querySelector('.content-area');
+      if (contentArea) {
+        contentArea.scrollTop = 0;
+      }
+    });
+  });
+</script>
+
+<!-- USAGE INSTRUCTIONS -->
+<!--
+1. Add this sidebar inside your main-container div
+2. Create tool content divs with class="tool-content" and id matching data-tool attributes
+3. The first tool with class="active" will be shown by default
+4. Update the tool names and data-tool attributes to match your tools
+
+Example structure:
+<div class="main-container">
+  <aside class="sidebar">...</aside>
+  <main class="content-area">
+    <div id="keyword-finder" class="tool-content active">Tool 1 content</div>
+    <div id="keyword-universe" class="tool-content">Tool 2 content</div>
+  </main>
+</div>
+
+Also add this CSS for content area:
+.tool-content {
+  display: none;
+}
+.tool-content.active {
+  display: block;
+}
+-->

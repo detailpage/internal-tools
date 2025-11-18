@@ -1,0 +1,233 @@
+<!-- ACTION BUTTONS COMPONENT -->
+<!-- Dynamic buttons that appear when table rows are selected -->
+
+<div id="tool-action-buttons" style="display: none; margin-bottom: 1rem;">
+  <div class="d-flex gap-2 flex-wrap">
+    <button class="btn btn-primary btn-sm" id="tool-action-universe">
+      <i class="fas fa-globe"></i> Generate Keyword Universe
+    </button>
+
+    <button class="btn btn-primary btn-sm" id="tool-action-history">
+      <i class="fas fa-history"></i> View Keyword History
+    </button>
+
+    <button class="btn btn-secondary btn-sm" id="tool-action-clear">
+      <i class="fas fa-times"></i> Clear Selection
+    </button>
+  </div>
+
+  <div style="margin-top: 0.5rem;">
+    <small style="color: #777;">
+      <i class="fas fa-info-circle"></i>
+      <span id="tool-selected-count">0</span> keywords selected
+    </small>
+  </div>
+</div>
+
+<!-- REQUIRED STYLES -->
+<style>
+  #tool-action-buttons {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+  }
+
+  .btn-primary {
+    background-color: #FFA500;
+    border-color: #FFA500;
+    font-weight: 600;
+    padding: 0.4rem 1rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+  }
+
+  .btn-primary:hover {
+    background-color: #ff9500;
+    border-color: #ff9500;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .btn-secondary {
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    color: #555;
+    font-weight: 500;
+    padding: 0.4rem 1rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+  }
+
+  .btn-secondary:hover {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+    color: #555;
+  }
+
+  .btn i {
+    margin-right: 0.3rem;
+  }
+</style>
+
+<!-- REQUIRED JAVASCRIPT -->
+<script>
+  (function() {
+    const actionButtons = document.getElementById('tool-action-buttons');
+    const selectedCount = document.getElementById('tool-selected-count');
+
+    // Get selected keywords from checkboxes
+    function getSelectedKeywords() {
+      const checkboxes = document.querySelectorAll('.tool-keyword-checkbox:checked');
+      return Array.from(checkboxes).map(cb => cb.dataset.keyword);
+    }
+
+    // Update action buttons visibility and count
+    function updateActionButtons() {
+      const selected = getSelectedKeywords();
+
+      if (selected.length > 0) {
+        actionButtons.style.display = 'block';
+        selectedCount.textContent = selected.length;
+      } else {
+        actionButtons.style.display = 'none';
+      }
+    }
+
+    // Navigate to another tool and populate data
+    function navigateToTool(toolName, keywords) {
+      // Click the tool in sidebar
+      const toolItem = document.querySelector(`[data-tool="${toolName}"]`);
+      if (toolItem) {
+        toolItem.click();
+      }
+
+      // Wait for DOM to be ready, then populate and submit
+      setTimeout(() => {
+        const inputId = `${toolName.split('-')[0].substring(0, 2)}-keywords`;
+        const submitId = `${toolName.split('-')[0].substring(0, 2)}-submit`;
+
+        const inputField = document.getElementById(inputId);
+        const submitBtn = document.getElementById(submitId);
+
+        if (inputField && submitBtn) {
+          inputField.value = keywords.join('\n');
+          submitBtn.click();
+        }
+      }, 150);
+    }
+
+    // Action 1: Generate Keyword Universe
+    document.getElementById('tool-action-universe').addEventListener('click', () => {
+      const selected = getSelectedKeywords();
+      if (selected.length === 0) {
+        alert('Please select at least one keyword');
+        return;
+      }
+      if (selected.length > 100) {
+        alert('Maximum 100 keywords allowed. Please reduce your selection.');
+        return;
+      }
+      navigateToTool('keyword-universe', selected);
+    });
+
+    // Action 2: View Keyword History
+    document.getElementById('tool-action-history').addEventListener('click', () => {
+      const selected = getSelectedKeywords();
+      if (selected.length === 0) {
+        alert('Please select at least one keyword');
+        return;
+      }
+      if (selected.length > 10) {
+        alert('Maximum 10 keywords allowed for history. Please reduce your selection.');
+        return;
+      }
+      navigateToTool('keyword-history', selected);
+    });
+
+    // Action 3: Clear Selection
+    document.getElementById('tool-action-clear').addEventListener('click', () => {
+      const checkboxes = document.querySelectorAll('.tool-keyword-checkbox');
+      checkboxes.forEach(cb => cb.checked = false);
+
+      const selectAll = document.getElementById('tool-select-all');
+      if (selectAll) {
+        selectAll.checked = false;
+      }
+
+      updateActionButtons();
+    });
+
+    // Make update function globally available
+    window.toolUpdateActionButtons = updateActionButtons;
+
+  })();
+</script>
+
+<!-- USAGE INSTRUCTIONS -->
+<!--
+1. Copy this component into your results section (above the table)
+2. Replace all "tool-" prefixes with your tool's prefix
+3. Update button labels and icons to match your tool's actions
+4. Update navigateToTool() calls with correct tool names
+5. Call updateActionButtons() whenever checkbox selection changes
+
+Example placement:
+
+<div class="results-section" id="tool-results-section">
+  <h5>Results</h5>
+
+  <!-- Action Buttons Component (this file) -->
+  <div id="tool-action-buttons">...</div>
+
+  <!-- Data Table -->
+  <table>...</table>
+</div>
+
+Integration with checkboxes:
+
+// In your table checkbox event handlers:
+document.querySelectorAll('.tool-keyword-checkbox').forEach(checkbox => {
+  checkbox.addEventListener('change', () => {
+    window.toolUpdateActionButtons();
+  });
+});
+
+// In your "select all" handler:
+document.getElementById('tool-select-all').addEventListener('change', function() {
+  const checkboxes = document.querySelectorAll('.tool-keyword-checkbox');
+  checkboxes.forEach(cb => cb.checked = this.checked);
+  window.toolUpdateActionButtons();
+});
+
+Customization:
+- Add more buttons: Copy a button and update ID, text, and icon
+- Change validation: Update the max keyword limits in click handlers
+- Change navigation: Update navigateToTool() with correct tool IDs and input field IDs
+- Change icons: Update Font Awesome class names
+- Change colors: Background uses #f8f9fa (light gray)
+
+Cross-tool navigation pattern:
+1. Click sidebar tool item to switch tools
+2. Wait 150ms for DOM to render
+3. Populate input field with selected keywords
+4. Auto-click submit button
+
+Required Bootstrap classes:
+- d-flex, gap-2, flex-wrap
+- btn, btn-primary, btn-secondary, btn-sm
+
+Required Font Awesome icons:
+- fas fa-globe (universe)
+- fas fa-history (history)
+- fas fa-times (clear/close)
+- fas fa-info-circle (info)
+
+Features:
+- Shows count of selected items
+- Hides when no items selected
+- Validates selection before navigation
+- Clears all selections
+- Smooth hover effects on buttons
+-->

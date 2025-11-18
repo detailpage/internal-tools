@@ -1,0 +1,39 @@
+{
+  "name": "client-tools-menu",
+  "version": "1.0.0",
+  "description": "DetailPage Client Tools - Modular tool suite",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "dev": "concurrently \"node server.js\" \"next dev\"",
+    "build": "next build",
+    "start": "next start",
+    "api": "node server.js"
+  },
+  "keywords": [
+    "detailpage",
+    "tools",
+    "keywords",
+    "analytics"
+  ],
+  "author": "DetailPage",
+  "license": "ISC",
+  "dependencies": {
+    "bootstrap": "^5.3.8",
+    "chart.js": "^4.5.1",
+    "concurrently": "^9.2.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "next": "^16.0.3",
+    "react": "^19.2.0",
+    "react-chartjs-2": "^5.3.1",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "24.10.1",
+    "@types/react": "19.2.6",
+    "nodemon": "^3.0.1",
+    "typescript": "5.9.3"
+  }
+}

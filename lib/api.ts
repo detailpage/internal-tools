@@ -1,6 +1,7 @@
 // API helper for calling backend endpoints
+// Uses relative paths to work with Next.js API routes (works on Vercel and locally)
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
+const API_BASE_URL = ''
 
 export async function fetchKeywordFinder(searchTerm: string, searchType: string) {
   const response = await fetch(`${API_BASE_URL}/api/keyword-finder`, {

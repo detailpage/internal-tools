@@ -4,13 +4,21 @@
 // Force empty string - never use environment variables for API base URL
 const API_BASE_URL = ''
 
-// Verify we're using relative paths
+// Log environment check
 if (typeof window !== 'undefined') {
-  console.log('API Base URL:', API_BASE_URL || '(relative paths)')
+  console.log('=== API CONFIGURATION DEBUG ===')
+  console.log('API_BASE_URL:', API_BASE_URL)
+  console.log('process.env.NEXT_PUBLIC_API_URL:', process.env.NEXT_PUBLIC_API_URL)
+  console.log('Window location:', window.location.origin)
+  console.log('==============================')
 }
 
 export async function fetchKeywordFinder(searchTerm: string, searchType: string) {
-  const response = await fetch(`${API_BASE_URL}/api/keyword-finder`, {
+  const fullUrl = `${API_BASE_URL}/api/keyword-finder`
+  console.log('🔍 Keyword Finder - Calling URL:', fullUrl)
+  console.log('🔍 Keyword Finder - Full resolved URL:', new URL(fullUrl, window.location.origin).href)
+
+  const response = await fetch(fullUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Header from './components/Header'
 import KeywordFinder from './components/KeywordFinder'
 import KeywordUniverse from './components/KeywordUniverse'
@@ -8,9 +8,19 @@ import KeywordHistory from './components/KeywordHistory'
 
 type Tool = 'keyword-finder' | 'keyword-universe' | 'keyword-history'
 
+// Version to verify deployment
+const APP_VERSION = '1.0.3'
+
 export default function Home() {
   const [activeTool, setActiveTool] = useState<Tool>('keyword-finder')
   const [selectedKeywords, setSelectedKeywords] = useState<string[]>([])
+
+  useEffect(() => {
+    console.log('=== APP VERSION ===')
+    console.log('Version:', APP_VERSION)
+    console.log('Build time:', new Date().toISOString())
+    console.log('==================')
+  }, [])
 
   const navigateToTool = (tool: Tool, keywords?: string[]) => {
     setActiveTool(tool)

@@ -9,7 +9,7 @@ import KeywordHistory from './components/KeywordHistory'
 type Tool = 'keyword-finder' | 'keyword-universe' | 'keyword-history'
 
 // Version to verify deployment
-const APP_VERSION = '1.0.4'
+const APP_VERSION = '1.0.5'
 const BUILD_TIME = new Date().toISOString()
 
 export default function Home() {

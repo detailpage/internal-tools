@@ -28,9 +28,10 @@ npm install
 # Create .env file with:
 # BC_CLIENT_ID=your_bluecitrus_client_id
 # BC_CLIENT_SECRET=your_bluecitrus_client_secret
-# API_PORT=3001  # Backend API port
-# NEXT_PUBLIC_API_URL=http://localhost:3001  # API URL for frontend
-# NEXT_PUBLIC_APP_URL=http://localhost:3000  # Frontend URL for CORS
+# APIKey-Keepa=your_keepa_api_key_here  # For future Keepa integration
+
+# IMPORTANT: Do NOT set NEXT_PUBLIC_API_URL or similar variables
+# The app uses relative paths (/api/*) which work on both localhost and Vercel
 ```
 
 ### Access the Application
